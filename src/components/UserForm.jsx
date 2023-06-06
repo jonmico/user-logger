@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
 const Label = styled.label`
   display: inline-block;
@@ -13,13 +13,13 @@ const Input = styled.input`
 `;
 
 const NameInput = styled(Input)`
-  border: ${({ validName }) =>
-    !validName ? '2px solid red' : '1px solid black'};
+  border: ${(props) =>
+    props.$isValidName ? '1px solid black' : '2px solid red'};
 `;
 
 const AgeInput = styled(Input)`
-  border: ${({ validAge }) =>
-    !validAge ? '2px solid red' : '1px solid black'};
+  border: ${(props) =>
+    props.$isValidAge ? '1px solid black' : '2px solid red'};
 `;
 
 const Button = styled.button`
@@ -42,7 +42,7 @@ const ErrorMessage = styled.p`
   bottom: 10px;
 `;
 
-export default function UserForm() {
+export default function UserForm({ addUser }) {
   const [formData, setFormData] = useState({ username: '', age: '' });
   const [isValidName, setIsValidName] = useState(true);
   const [isValidAge, setIsValidAge] = useState(true);
@@ -75,6 +75,7 @@ export default function UserForm() {
       return;
     }
 
+    addUser(formData);
     setFormData({ username: '', age: '' });
   }
 
@@ -87,7 +88,7 @@ export default function UserForm() {
         id='username'
         name='username'
         onChange={handleInputChange}
-        validName={isValidName}
+        $isValidName={isValidName}
       />
       {!isValidName && <ErrorMessage>Invalid name.</ErrorMessage>}
       <Label htmlFor='age'>Age (Years)</Label>
@@ -97,7 +98,7 @@ export default function UserForm() {
         id='age'
         name='age'
         onChange={handleInputChange}
-        validAge={isValidAge}
+        $isValidAge={isValidAge}
       />
       {!isValidAge && <ErrorMessage>Invalid age.</ErrorMessage>}
       <Button type='submit'>Add User</Button>
