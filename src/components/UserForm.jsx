@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { styled } from 'styled-components';
 
 const Label = styled.label`
@@ -25,12 +26,37 @@ const Button = styled.button`
 `;
 
 export default function UserForm() {
+  const [formData, setFormData] = useState({ username: '', age: null });
+
+  function handleInputChange(evt) {
+    setFormData((prevState) => ({
+      ...prevState,
+      [evt.target.name]: evt.target.value,
+    }));
+  }
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <Label htmlFor='username'>Username</Label>
-      <Input type='text' id='username' name='username' />
+      <Input
+        value={formData.username}
+        type='text'
+        id='username'
+        name='username'
+        onChange={handleInputChange}
+      />
       <Label htmlFor='age'>Age (Years)</Label>
-      <Input type='number' id='age' name='age' />
+      <Input
+        value={formData.age}
+        type='number'
+        id='age'
+        name='age'
+        onChange={handleInputChange}
+      />
       <Button type='submit'>Add User</Button>
     </form>
   );
