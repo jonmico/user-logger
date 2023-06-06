@@ -1,8 +1,13 @@
+import { useState } from 'react';
+import UserForm from './components/UserForm';
+import { Card } from './components/Card';
+
 function App() {
+  const [users, setUsers] = useState([]);
   return (
-    <div>
-      <h1>Hello there!</h1>
-    </div>
+    <Card>
+      <UserForm />
+    </Card>
   );
 }
 
