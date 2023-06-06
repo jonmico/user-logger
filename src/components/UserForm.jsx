@@ -12,6 +12,16 @@ const Input = styled.input`
   margin-bottom: 10px;
 `;
 
+const NameInput = styled(Input)`
+  border: ${({ validName }) =>
+    !validName ? '2px solid red' : '1px solid black'};
+`;
+
+const AgeInput = styled(Input)`
+  border: ${({ validAge }) =>
+    !validAge ? '2px solid red' : '1px solid black'};
+`;
+
 const Button = styled.button`
   color: white;
   background-color: purple;
@@ -25,38 +35,71 @@ const Button = styled.button`
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  margin: 0;
+  position: relative;
+  bottom: 10px;
+`;
+
 export default function UserForm() {
-  const [formData, setFormData] = useState({ username: '', age: null });
+  const [formData, setFormData] = useState({ username: '', age: '' });
+  const [isValidName, setIsValidName] = useState(true);
+  const [isValidAge, setIsValidAge] = useState(true);
 
   function handleInputChange(evt) {
     setFormData((prevState) => ({
       ...prevState,
       [evt.target.name]: evt.target.value,
     }));
+    if (evt.target.name === 'username') setIsValidName(true);
+    if (evt.target.name === 'age') setIsValidAge(true);
   }
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    const { username } = formData;
+    const age = parseInt(formData.age);
+
+    if (username.trim().length === 0) {
+      setIsValidName(false);
+
+      if (age < 0 || !age) {
+        setIsValidAge(false);
+      }
+      return;
+    }
+
+    if (age < 0 || !age) {
+      setIsValidAge(false);
+      return;
+    }
+
+    setFormData({ username: '', age: '' });
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Label htmlFor='username'>Username</Label>
-      <Input
+      <NameInput
         value={formData.username}
         type='text'
         id='username'
         name='username'
         onChange={handleInputChange}
+        validName={isValidName}
       />
+      {!isValidName && <ErrorMessage>Invalid name.</ErrorMessage>}
       <Label htmlFor='age'>Age (Years)</Label>
-      <Input
+      <AgeInput
         value={formData.age}
         type='number'
         id='age'
         name='age'
         onChange={handleInputChange}
+        validAge={isValidAge}
       />
+      {!isValidAge && <ErrorMessage>Invalid age.</ErrorMessage>}
       <Button type='submit'>Add User</Button>
     </form>
   );
